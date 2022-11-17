@@ -1,4 +1,4 @@
-# Three.js Journey
+# Ancient Temple by @phi_and_code
 
 ## Setup
 Download [Node.js](https://nodejs.org/en/download/).
@@ -14,3 +14,4 @@ npm run dev
 # Build for production in the dist/ directory
 npm run build
 ```
+## Thanks @brunosimon for Three.js Journey
