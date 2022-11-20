@@ -7,6 +7,8 @@ inject()
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
+const div = document.querySelector('div.loader__box')
+
 
 // Scene
 const scene = new THREE.Scene()
@@ -16,9 +18,27 @@ const fog = new THREE.Fog(0xc2b280, 2, 21)
 scene.fog = fog
 
 /**
+* Loading Manager
+*/
+const loadingManager = new THREE.LoadingManager()
+loadingManager.onStart = () => {
+    scene.visible = false
+}
+
+loadingManager.onProgress = () => {
+    scene.visible = false
+}
+
+loadingManager.onLoad = () => {
+    div.style.display = 'none'
+    scene.visible = true
+}
+
+
+/**
  * Textures
  */
-const textureLoader = new THREE.TextureLoader()
+const textureLoader = new THREE.TextureLoader(loadingManager)
 
 //Floor Displacements
 const heightMapTexture = textureLoader.load('heightmap/heightmap.jpg')
@@ -138,9 +158,6 @@ column3.scale.set(0.25, 0.5, 0.25)
 column3.position.set(-3.973, 5, -2.498)
 column3.castShadow = true
 
-column1.castShadow = true
-column2.castShadow = true
-column3.castShadow = true
 columns.add(column1, column2, column3)
 
 
@@ -191,8 +208,11 @@ const bigBackWall3 = new THREE.Mesh(
 bigBackWall3.geometry.setAttribute('uv2', new THREE.Float32BufferAttribute(bigBackWall.geometry.attributes.uv.array, 2))
 bigBackWall3.position.set(-4.99, 5.742, -5.074)
 bigBackWall.castShadow = true
+bigBackWall.receiveShadow = true
 bigBackWall2.castShadow = true
+bigBackWall2.receiveShadow = true
 bigBackWall3.castShadow = true
+bigBackWall3.receiveShadow = true
 walls.add(bigBackWall, bigBackWall2, bigBackWall3)
 
 
@@ -212,6 +232,7 @@ const coridorGeometry = new THREE.BoxGeometry(4, 4, 5)
 let coridorMaterials = [material1, transparentMaterial, material2, material2, material3, material3]
 const coridor = new THREE.Mesh(coridorGeometry, coridorMaterials)
 coridor.castShadow = true
+coridor.receiveShadow = true
 coridor.rotation.y = Math.PI * 0.5
 coridor.position.set(0, 1.809, -7.041)
 walls.add(coridor)
@@ -232,6 +253,7 @@ const bigRightWall = new THREE.Mesh(
 )
 bigRightWall.geometry.setAttribute('uv2', new THREE.Float32BufferAttribute(bigRightWall.geometry.attributes.uv.array, 2))
 bigRightWall.castShadow = true
+bigRightWall.receiveShadow = true
 bigRightWall.rotation.y = Math.PI * 0.5
 bigRightWall.position.set(5.251, 4.267, 0)
 
@@ -274,6 +296,7 @@ const floor = new THREE.Mesh(
 floor.geometry.setAttribute('uv2', new THREE.Float32BufferAttribute(floor.geometry.attributes.uv.array, 2))
 floor.rotation.x = - Math.PI * 0.5
 floor.position.y = 0
+floor.castShadow = true
 floor.receiveShadow = true
 scene.add(floor)
 
@@ -286,15 +309,14 @@ scene.add(ambientLight)
 
 
 // Spot Light
-const spotLight = new THREE.SpotLight(0xfdb813, 1.6814)
-spotLight.position.set(-5.566, 1.809, 17.05)
+const spotLight = new THREE.SpotLight(0xfdb813, 68.959)
+spotLight.position.set(-20, 6.364, 17.05)
 spotLight.angle = 0.3294
 spotLight.penumbra = 1
 spotLight.decay = 1.299
 spotLight.distance = 69.81
 spotLight.castShadow = true
-spotLight.shadow.mapSize.width = 512
-spotLight.shadow.mapSize.height = 512
+spotLight.shadow.mapSize.set(512, 512)
 spotLight.shadow.camera.near = 1
 spotLight.shadow.camera.far = 70
 spotLight.shadow.camera.focus = 1
@@ -353,6 +375,13 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 renderer.setClearColor(0xc2b280)
+renderer.physicallyCorrectLights = true
+renderer.outputEncoding = THREE.sRGBEncoding
+renderer.toneMapping = THREE.ACESFilmicToneMapping
+renderer.toneMappingExposure = 0.847
+renderer.shadowMap.enabled = true
+renderer.shadowMap.type = THREE.PCFSoftShadowMap
+
 
 /**
  * Animate
