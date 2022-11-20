@@ -34,6 +34,7 @@ body
 
 .loader__title {
     font-family: 'Cinzel', serif;
+    text-align: center;
     font-size: 3rem;
 }
 
@@ -112,4 +113,11 @@ body
 .loader__footer > .loader__footer--link:hover {
     color: #c2b280;
     transition: color .21s ease-in-out;
+}
+
+@media (min-width: 600px) {
+    .loader__title {
+        font-size: 2.5rem;
+        text-align: center;
+    }
 }
